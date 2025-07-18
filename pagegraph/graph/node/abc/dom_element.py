@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, List
 
 from pagegraph.graph.element import sort_elements
 from pagegraph.graph.node import Node
@@ -94,6 +94,21 @@ class DOMElementNode(Node, ABC):
 
     def creator_node(self) -> ActorNode:
         return self.creation_edge().incoming_node()
+
+    def creator_chain(self) -> List[ActorNode]:
+        """Returns the chain of actors that created this element."""
+        creator_chain = []
+
+        current_node = self
+
+        while True:
+            creator_node = current_node.creator_node()
+            current_node = creator_node
+            assert creator_node
+            creator_chain.append(creator_node)
+            if creator_node.is_type(Node.Types.PARSER):
+                break
+        return creator_chain
 
     def execution_context(self) -> DOMRootNode:
         """Returns a best effort of what frame / DOMRootNode to associate

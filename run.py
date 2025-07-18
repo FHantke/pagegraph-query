@@ -6,6 +6,7 @@ import pathlib
 import sys
 
 import pagegraph.commands
+import pagegraph.commands.creator_chain
 import pagegraph.commands.element
 import pagegraph.commands.html
 import pagegraph.commands.js_calls
@@ -45,6 +46,9 @@ def get_command(args: argparse.Namespace) -> pagegraph.commands.Base:
             return pagegraph.commands.html.Command(
                 args.input, args.frame, args.at_serialization,
                 args.body_content, args.debug)
+        case "creator_chain":
+            return pagegraph.commands.creator_chain.Command(
+                args.input, args.id, args.debug)
         case "unknown":
             return pagegraph.commands.unknown.Command(args.input)
         case _:
@@ -242,6 +246,21 @@ UNKNOWN_QUERY_PARSER.add_argument(
     help="Path to PageGraph recording.")
 UNKNOWN_QUERY_PARSER.set_defaults(command_name="unknown")
 
+
+MY_PARSER = SUBPARSERS.add_parser(
+    "creator_chain",
+    help="Print the creator chain of a DOM element, i.e., the chain of "
+         "actors that created the element.")
+MY_PARSER.add_argument(
+    "input",
+    type=pathlib.Path,
+    help="Path to PageGraph recording.")
+
+MY_PARSER.add_argument(
+    "-i", "--id",
+    default=None,
+    help="ID (as described by PageGraph node ids, in the format 'n##').")
+MY_PARSER.set_defaults(command_name="creator_chain")
 
 try:
     ARGS = PARSER.parse_args()

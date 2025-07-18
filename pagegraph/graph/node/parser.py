@@ -31,6 +31,10 @@ class ParserNode(Node):
         if self.pg.debug:
             if len(frame_owner_nodes) != 1:
                 self.throw("Did not find exactly 1 parent frame owner node")
+
+        if not frame_owner_nodes:
+            # How can this happen?
+            return None
         return frame_owner_nodes[0]
 
     def created_nodes(self) -> list[Node]:
@@ -53,3 +57,6 @@ class ParserNode(Node):
                 already_returned.add(domroot_node)
                 domroots.append(domroot_node)
         return domroots
+
+    def to_report(self) -> dict[str, str]:
+        return {"type": "parser"}

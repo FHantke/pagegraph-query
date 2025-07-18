@@ -43,6 +43,7 @@ class DOMElementReport(ReportBase):
     id: PageGraphId
     tag: str
     attrs: dict[str, JSONAble] | None = None
+    creator_chain: list[PageGraphId] | None = None
 
 
 @dataclass
