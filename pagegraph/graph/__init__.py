@@ -30,6 +30,8 @@ if TYPE_CHECKING:
     from pagegraph.graph.edge.storage_clear import StorageClearEdge
     from pagegraph.graph.edge.storage_delete import StorageDeleteEdge
     from pagegraph.graph.edge.storage_set import StorageSetEdge
+    from pagegraph.graph.edge.storage_read_call import StorageReadCallEdge
+    from pagegraph.graph.edge.storage_read_result import StorageReadResultEdge
     from pagegraph.graph.node.abc.parent_dom_element import ParentDOMElementNode
     from pagegraph.graph.node.abc.dom_element import DOMElementNode
     from pagegraph.graph.node.dom_root import DOMRootNode
@@ -251,12 +253,20 @@ class PageGraph:
         return cast(list["EventListenerAddEdge"], edges)
 
     def event_listener_fired_edges(self) -> list[EventListenerFiredEdge]:
-        edges = self.edges_of_type(Edge.Types.EVENT_LISTENER_ADD)
+        edges = self.edges_of_type(Edge.Types.EVENT_LISTENER_FIRED)
         return cast(list["EventListenerFiredEdge"], edges)
 
     def event_listener_remove_edges(self) -> list[EventListenerRemoveEdge]:
-        edges = self.edges_of_type(Edge.Types.EVENT_LISTENER_ADD)
+        edges = self.edges_of_type(Edge.Types.EVENT_LISTENER_REMOVE)
         return cast(list["EventListenerRemoveEdge"], edges)
+
+    def storage_read_edges(self) -> list[StorageReadCallEdge]:
+        edges = self.edges_of_type(Edge.Types.STORAGE_READ_CALL)
+        return cast(list["StorageReadCallEdge"], edges)
+    
+    def storage_read_result_edges(self) -> list[StorageReadResultEdge]:
+        edges = self.edges_of_type(Edge.Types.STORAGE_READ_RESULT)
+        return cast(list["StorageReadResultEdge"], edges)
 
     def storage_set_edges(self) -> list[StorageSetEdge]:
         edges = self.edges_of_type(Edge.Types.STORAGE_SET)
@@ -308,6 +318,15 @@ class PageGraph:
 
     def edges_of_type(self, edge_type: Edge.Types) -> list[Edge]:
         return self.__edges_by_type[edge_type]
+    
+    def edges_of_types(self, edge_types: list[Edge.Types]) -> list[Edge]:
+        edges = []
+        for edge_type in edge_types:
+            # TODO check via all valid nodes. It could be that the edge type is just empty
+            if edge_type not in self.__edges_by_type:
+                raise ValueError(f"Unrecognized edge type: {edge_type}")
+            edges += self.__edges_by_type[edge_type]
+        return edges
 
     def domroot_for_frame_id(self, frame_id: FrameId) -> DOMRootNode:
         if self.debug:

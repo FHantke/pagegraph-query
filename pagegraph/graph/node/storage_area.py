@@ -6,8 +6,10 @@ from typing import Optional
 from pagegraph.graph.edge import Edge
 from pagegraph.graph.node import Node
 
+from pagegraph.serialize import Reportable, StorageStructureReport
 
-class StorageAreaNode(Node, ABC):
+
+class StorageAreaNode(Node, Reportable):
     incoming_edge_types = [
         Edge.Types.STORAGE_BUCKET,
         Edge.Types.STORAGE_CLEAR,
@@ -26,3 +28,6 @@ class StorageAreaNode(Node, ABC):
             self.as_local_storage_node() or
             self.as_session_storage_node()
         )
+
+    # def to_report(self) -> StorageStructureReport:
+    #     return StorageStructureReport("", self.type_name())

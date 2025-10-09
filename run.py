@@ -7,6 +7,9 @@ import sys
 
 import pagegraph.commands
 import pagegraph.commands.creator_chain
+import pagegraph.commands.storage_calls
+import pagegraph.commands.event_calls
+import pagegraph.commands.edges
 import pagegraph.commands.element
 import pagegraph.commands.html
 import pagegraph.commands.js_calls
@@ -49,6 +52,15 @@ def get_command(args: argparse.Namespace) -> pagegraph.commands.Base:
         case "creator_chain":
             return pagegraph.commands.creator_chain.Command(
                 args.input, args.id, args.debug)
+        case "storage_calls":
+            return pagegraph.commands.storage_calls.Command(
+                args.input, args.frame, args.debug)
+        case "event_calls":
+            return pagegraph.commands.event_calls.Command(
+                args.input, args.frame, args.debug)
+        case "edges":
+            return pagegraph.commands.edges.Command(
+                args.input, args.frame, args.edge_types, args.debug)
         case "unknown":
             return pagegraph.commands.unknown.Command(args.input)
         case _:
@@ -180,6 +192,39 @@ JS_CALLS_PARSER.add_argument(
          "Script node with the given ID "
          "(as described by PageGraph node ids, in the format 'n##').")
 JS_CALLS_PARSER.set_defaults(command_name="js_calls")
+
+STORAGE_CALLS_PARSER = SUBPARSERS.add_parser(
+    "storage-calls",
+    help="Print information about storage calls made during page execution.")
+STORAGE_CALLS_PARSER.add_argument(
+    "input",
+    type=pathlib.Path,
+    help="Path to PageGraph recording.")
+STORAGE_CALLS_PARSER.add_argument(
+    "-f", "--frame",
+    default=None,
+    help="Only include sotrage calls made by code running in this frame's context "
+         "(as described by PageGraph node ids, in the format 'n##'). ")
+STORAGE_CALLS_PARSER.set_defaults(command_name="storage_calls")
+
+EDGES_PARSER = SUBPARSERS.add_parser(
+    "edges",
+    help="Print information about edges created during page execution.")
+EDGES_PARSER.add_argument(
+    "input",
+    type=pathlib.Path,
+    help="Path to PageGraph recording.")
+EDGES_PARSER.add_argument(
+    "-f", "--frame",
+    default=None,
+    help="Only include edges created by code running in this frame's context "
+         "(as described by PageGraph node ids, in the format 'n##'). ")
+EDGES_PARSER.add_argument(
+    "-e", "--edge-types",
+    default=None,
+    action='append',
+    help="List of edge types")
+EDGES_PARSER.set_defaults(command_name="edges")
 
 ELEMENT_QUERY_PARSER = SUBPARSERS.add_parser(
     "elm",

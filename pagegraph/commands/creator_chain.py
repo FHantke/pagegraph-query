@@ -37,7 +37,7 @@ class Command(pagegraph.commands.Base):
 
         pg = pagegraph.graph.from_path(self.input_path, self.debug)
         target_node = pg.node(self.pg_id)
-        assert target_node.is_type(Node.Types.SCRIPT_LOCAL)
+        assert target_node.is_type(Node.Types.SCRIPT_LOCAL) or target_node.is_type(Node.Types.PARSER)
 
         creator_chain = []
         current_node = target_node

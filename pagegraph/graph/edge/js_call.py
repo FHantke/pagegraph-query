@@ -24,6 +24,9 @@ class JSCallEdge(FrameIdAttributedEdge):
         except JSONDecodeError:
             return_result = args_raw
         return return_result
+    
+    def is_ad(self) -> bool:
+        return self.data().get(Edge.RawAttrs.IS_AD.value, False)
 
     def as_js_call_edge(self) -> Optional[JSCallEdge]:
         return self

@@ -18,6 +18,20 @@ class TextNode(DOMElementNode, Reportable):
 
     def to_report(self) -> DOMElementReport:
         attrs: dict[str, JSONAble] = {"text": self.text()}
+
+        execution_context = self.execution_context()
+        if execution_context:
+            # print(execution_context.to_report())
+            if not execution_context.is_top_level_domroot():
+                parent_dom_root = execution_context.parent_domroot_node()
+                frame_security_origin = parent_dom_root.security_origin()
+                if frame_security_origin:
+                    attrs["frame security origin"] = frame_security_origin
+
+            frame_url = execution_context.url()
+            if frame_url:
+                attrs["frame url"] = frame_url
+                
         return DOMElementReport(self.pg_id(), self.tag_name(), attrs)
 
     def tag_name(self) -> str:

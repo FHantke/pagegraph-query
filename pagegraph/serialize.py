@@ -57,9 +57,21 @@ class JSCallResultReport(ReportBase):
     method: str
     args: Any
     result: Any
+    is_ad_context: bool
     call_context: FrameReport
     execution_context: Optional[FrameReport] = None
 
+
+@dataclass
+class StorageStructureReport(ReportBase):
+    name: str
+    type: str
+    
+@dataclass
+class StorageOperationReport(ReportBase):
+    method: str
+    key: Any
+    value: Any
 
 @dataclass
 class RequestReport(ReportBase):
@@ -128,6 +140,10 @@ class EdgeReport(ElementReport):
     outgoing_node: Union[NodeReport, BriefNodeReport, str, None]
     kind: str = "edge"
 
+@dataclass
+class StorageOperationReport(EdgeReport):
+    kind: str = "edge"
+    
 
 @dataclass
 class Reportable(ABC):

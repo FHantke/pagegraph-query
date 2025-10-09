@@ -25,6 +25,7 @@ class JSCallResult(Reportable):
         self.structure = call_edge.outgoing_node()
         self.result = result_edge
         self.pg = self.structure.pg
+        self.is_ad_context = call_edge.is_ad()
 
     def pretty_print(self) -> str:
         msg = self.structure.name() + f"({str(self.call.args())})"
@@ -49,7 +50,7 @@ class JSCallResult(Reportable):
             execution_context_report = receiver_context.to_report()
 
         report = JSCallResultReport(self.structure.name(), self.args(),
-            self.return_value(), call_context.to_report(), execution_context_report)
+            self.return_value(), self.is_ad_context, call_context.to_report(), execution_context_report)
         return report
 
     def call_context(self) -> DOMRootNode:

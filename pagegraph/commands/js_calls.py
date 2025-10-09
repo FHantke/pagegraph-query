@@ -54,7 +54,7 @@ class Command(pagegraph.commands.Base):
             if not domroot_node:
                 raise ValueError("The PageGraph id provided is not " +
                     f"a DOMRootNode, nid={self.frame_nid}")
-        assert domroot_node
+        #  assert domroot_node
 
         can_do_fast_path = (domroot_node is not None and
             not self.cross_frame and not self.pg_id and not self.method)

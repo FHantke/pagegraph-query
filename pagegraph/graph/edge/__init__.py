@@ -182,6 +182,7 @@ class Edge(PageGraphElement, ABC):
         TIMESTAMP = "timestamp"
         TYPE = "edge type"
         VALUE = "value"
+        IS_AD = "is ad"
 
     def __init__(self, graph: PageGraph, pagegraph_id: PageGraphEdgeId,
                  parent_id: PageGraphNodeId, child_id: PageGraphNodeId):
